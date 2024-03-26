@@ -1,0 +1,51 @@
+#include <stdio.h>
+int main()
+{
+	int n;   						//n为城市数
+	int edge;						//edge为边数
+	scanf("%d %d",&n,&edge);
+	int wij[edge][3];				//wij为两个城市的权值
+	int i,j,count,x;					//i,j,count,x为计数器 
+	int assist[n+1];				//assist为辅助数组，其标号的值为其集合 
+	int sum=0;						//sum为总共权值 
+	for( i = 0 ; i < edge ; i ++ ){
+		for ( j = 0 ; j < 3 ; j ++){
+			scanf("%d",&wij[i][j]);
+		}
+	}								//输入各个点和边的权值 
+	
+	for( i = 1 ; i <= n ; i ++){
+		assist[i] = i;
+	}								//初始化辅助数组，每个点是自己的集合 
+	
+	int compare[3] ={0}	;		 		//用来存放比大小的数组 
+	for( i = 0 ; i < edge ; i ++ ){
+		for( j = edge - 2; j >= i ; j --){
+			if( wij[j][2] > wij[j+1][2] ){
+				compare[0]  = wij[j+1][0];		compare[1]  = wij[j+1][1];	    compare[2]  = wij[j+1][2];
+				wij[j+1][0] = wij[j][0]  ;		wij[j+1][1] = wij[j][1]  ;   	wij[j+1][2] = wij[j][2]  ;
+				wij[j][0]	= compare[0] ;      wij[j][1]   = compare[1] ;      wij[j][2]   = compare[2] ;
+			}
+		}
+	}								//将各个边的权值按从小到大排序 	
+	j = 0;
+	for( i = 0 ; i < edge ; i ++){
+		if(assist[ wij[i][0] ] != assist[ wij[i][1] ]){
+			sum += wij[i][2];
+			x = assist[ wij[i][1] ] ;
+			for ( count = 1 ; count <= n ; count ++ ){
+				if( assist[count] == x){
+					assist[count] = assist[wij[i][0]];
+				}
+			}
+			j = j + 1;
+		}
+		if( j == n-1 ){
+			break;
+		}
+	}
+	
+	printf("%d",sum);
+
+	return 0;
+}
